@@ -70,16 +70,29 @@ class AreaCountryItem(scrapy.Item):
     regions = scrapy.Field()
 
 
-class ChateauItem(scrapy.Item):
+class WineryItem(scrapy.Item):
     """酒庄
     """
-    mongodb_spiders = ["wine"]
-    mongodb_collections = ["wineworld_chateau"]
+    mongodb_spiders = ["winery"]
+    mongodb_collections = ["wineworld_winery"]
 
-    cname = scrapy.Field()    # 中文名
-    ename = scrapy.Field()    # 英文名
-    img = scrapy.Field()
-    brief_intro = scrapy.Field()     # 简介
-    wines = scrapy.Field()    # 酒庄酒款
-    infos = scrapy.Field()   # 土壤类型
+    url = scrapy.Field()
+    winery_cn = scrapy.Field()    # 中文名
+    winery_en = scrapy.Field()    # 英文名
+    winery_img = scrapy.Field()
+    intro = scrapy.Field()     # 简介
+    base_info = scrapy.Field()   # 土壤类型
+    extra_info = scrapy.Field()
+    winery_id = scrapy.Field()
+
+
+class WineryWineItem(scrapy.Item):
+    """酒庄的酒款
+    """
+    mongodb_spiders = ["winery"]
+    mongodb_collections = ["wineworld_winery_wines"]
+
+    winery_id = scrapy.Field()    # 酒庄id
+    wine_id = scrapy.Field()      # 酒款id
+    
 
