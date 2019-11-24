@@ -3,7 +3,7 @@ import scrapy
 import json
 from scrapy.http import Request
 
-from wineworld.items import WineItem, VintAgeItem, ChateauItem
+from wineworld.items import WineItem
 
 
 class WineSpider(scrapy.Spider):
@@ -33,15 +33,15 @@ class WineSpider(scrapy.Spider):
             url = row["url"]
             yield Request(url, meta={"row": row}, callback=self.parse_item)
 
-      #  page_count = jdata["pageCount"]
-      #  page = response.meta["page"]
-      #  if page < page_count:
-      #      page += 1
-      #      yield scrapy.FormRequest(
-      #              response.url,
-      #              formdata={"pageIndex": str(page)},
-      #              callback=self.parse,
-      #              meta={"page": page})
+        page_count = jdata["pageCount"]
+        page = response.meta["page"]
+        if page < page_count:
+            page += 1
+            yield scrapy.FormRequest(
+                    response.url,
+                    formdata={"pageIndex": str(page)},
+                    callback=self.parse,
+                    meta={"page": page})
 
     def parse_item(self, response):
         # 酒款
@@ -76,22 +76,3 @@ class WineSpider(scrapy.Spider):
             formdatas.append({"wineid":wineid, "vintageid":vintageid})
         item["vintages"] = vintage_list
         yield item
-#        for formdata in formdatas:
-#            yield scrapy.FormRequest(self.vintage_url, 
-#                    formdata=formdata,
-#                    callback=self.parse_vintage,
-#                    meta={"idinfo":formdata}
-#                    )
-
-    def parse_vintage(self, response):
-        jdata = json.loads(response.text)
-        idinfo = response.meta["idinfo"]
-        item = VintAgeItem()
-        item["wineid"] = idinfo["wineid"]
-        item["vintageid"] = idinfo['vintageid']
-        item["grape"] = jdata["GrapeVariety"]
-        item["price"] = jdata["price"] 
-        item["year"] = jdata["wineYear"]
-        item["logo"] = jdata["winelogo"]
-        item["taste"] = jdata["WineTaste"]
-        return item
