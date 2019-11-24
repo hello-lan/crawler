@@ -45,6 +45,31 @@ class VintAgeItem(scrapy.Item):
     taste = scrapy.Field()
 
 
+class AreaRegionItem(scrapy.Item):
+    """产区
+    """
+    mongodb_spiders = ["area"]
+    mongodb_collections = ["wineworld_area_region"]
+
+    url = scrapy.Field()
+    country = scrapy.Field()
+    region_name_en = scrapy.Field()
+    region_name_cn = scrapy.Field()
+    region_info = scrapy.Field()
+    intro = scrapy.Field()
+
+
+class AreaCountryItem(scrapy.Item):
+    mongodb_spiders = ["area"]
+    mongodb_collections = ["wineworld_area_country"]
+
+    url = scrapy.Field()
+    country_en = scrapy.Field()
+    country_cn = scrapy.Field()
+    intro = scrapy.Field()
+    regions = scrapy.Field()
+
+
 class ChateauItem(scrapy.Item):
     """酒庄
     """
