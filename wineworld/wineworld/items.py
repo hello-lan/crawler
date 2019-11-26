@@ -14,7 +14,7 @@ class WineItem(scrapy.Item):
     mongodb_spiders = ["wine"]
     mongodb_collections = ["wineworld_wine"]
 
-    chateau = scrapy.Field()   # 酒庄
+    winery = scrapy.Field()   # 酒庄
     area = scrapy.Field()    # 产区 
     area_full = scrapy.Field()    # 产区 
     url = scrapy.Field()  
@@ -33,7 +33,7 @@ class WineItem(scrapy.Item):
 class VintAgeItem(scrapy.Item):
     """年份
     """
-    mongodb_spiders = ["wine"]
+    mongodb_spiders = ["vintage"]
     mongodb_collections = ["wineworld_vintage"]
 
     vintageid = scrapy.Field()  # 年份id

@@ -56,7 +56,7 @@ class WineSpider(scrapy.Spider):
         item["grapes"] = row["grapeName"]
 
         item["logo"] = response.css("#winelogo::attr(src)").get()
-        item["chateau"] = response.css("ul.wine-attr > li:contains(酒庄) > .attr-r::text").get(default="").strip()
+        item["winery"] = response.css("ul.wine-attr > li:contains(酒庄) > .attr-r::text").get(default="").strip()
         item["area_full"] = response.css("ul.wine-attr > li:contains(产区) > .attr-r::text").get(default="").strip().replace("\xa0", '').replace(" ", "")
         item["summary"] = response.css(".summary::text").get()
         item["wine_taste"] = response.css("#WineTaste::text").get()
