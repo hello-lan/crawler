@@ -96,3 +96,16 @@ class WineryWineItem(scrapy.Item):
     wine_id = scrapy.Field()      # 酒款id
     
 
+class GrapeItem(scrapy.Item):
+    """葡萄
+    """
+    mongodb_spiders = ["grape"]
+    mongodb_collections = ["wineworld_grape"]
+
+    url = scrapy.Field()
+    name_en = scrapy.Field()
+    name_cn = scrapy.Field()
+    attr = scrapy.Field()
+    img = scrapy.Field()
+    intro = scrapy.Field()
+
