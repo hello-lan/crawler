@@ -27,3 +27,9 @@ scrapy crawl wine
 scrapy crawl vintage -a fpath=data/vintage_example.csv
 ```
 
+2. 图片爬虫同上，需要的文件格式为只有一列，每行是个图片都url，例如：
+
+```
+scrapy crawl img -a fpath=data/img_url.csv
+```
+

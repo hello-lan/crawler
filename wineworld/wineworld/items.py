@@ -109,3 +109,10 @@ class GrapeItem(scrapy.Item):
     img = scrapy.Field()
     intro = scrapy.Field()
 
+
+class ImageItem(scrapy.Item):
+    mongodb_spiders = ["img"]
+    mongodb_collections = ["wineworld_image"]
+
+    url = scrapy.Field()    # 图片url
+    image_path = scrapy.Field()   # 图片在本地的路径
