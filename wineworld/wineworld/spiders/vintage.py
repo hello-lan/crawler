@@ -36,8 +36,8 @@ class VintageSpider(scrapy.Spider):
         idinfo = response.meta["idinfo"]
         jdata = json.loads(response.text)
         item = VintAgeItem()
-        item["vintageid"] = idinfo["wineid"]
-        item["wineid"] = idinfo["vintageid"]
+        item["vintageid"] = idinfo["vintageid"]
+        item["wineid"] = idinfo["wineid"]
         item["grape"] =  jdata["GrapeVariety"]
         item["price"] = jdata["price"]
         item["year"] = jdata["wineYear"]

@@ -12,7 +12,6 @@ class WineSpider(scrapy.Spider):
     start_urls = []
 
     wine_list_url = "https://m.wine-world.com/wine/HitWine"
-    vintage_url = "https://m.wine-world.com/wine/GetWineInfo"
 
     custom_settings = {
         "ITEM_PIPELINES": {
@@ -60,19 +59,21 @@ class WineSpider(scrapy.Spider):
         item["area_full"] = response.css("ul.wine-attr > li:contains(产区) > .attr-r::text").get(default="").strip().replace("\xa0", '').replace(" ", "")
         item["summary"] = response.css(".summary::text").get()
         item["wine_taste"] = response.css("#WineTaste::text").get()
-#        item["grapes"] = response.css("#grapeList::text").get("").strip()
         vintage_list = []
-        formdatas = []
+        vintageid_set = set()
         for tmp_sel in response.css(".vtcell"):
             wineid, vintageid = tmp_sel.css("a::attr(onclick)").re("LoadData\('(.*?)','(.*?)'")
             if len(vintageid) == 0:
                 continue
+            if vintageid in vintageid_set:
+                continue
+            else:
+                vintageid_set.add(vintageid)
             year = tmp_sel.css("a::text").get("").strip()
             vintage_list.append(
                     {"wineid": wineid,
                      "vintageid": vintageid,
                      "year": year}
                     )
-            formdatas.append({"wineid":wineid, "vintageid":vintageid})
         item["vintages"] = vintage_list
         yield item
