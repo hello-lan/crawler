@@ -2,6 +2,7 @@
 import scrapy
 from scrapy.http import Request
 
+import re
 from itertools import chain
 from datetime import datetime
 
@@ -37,7 +38,17 @@ class DecanterchinaSpider(scrapy.Spider):
         item["url"] = response.url
         item["title"] = response.css("header > h1::text").get('').strip()
         item["author"] = response.css(".author > [rel=author]::attr(title)").get()
-        item["pub_time"] = response.css("time::attr(datetime)").get()
-        item["content"] = "".join(response.css(".article-content>p *::text").getall())
+        ts = response.css("time::attr(datetime)").get()
+        item["pub_time"] = datetime.fromtimestamp(int(ts))
+
+        def rpl(m):
+            url_ = m.group("url")
+            txt = m.group()
+            url = response.urljoin(url_)
+            rpl_txt = txt.replace(url_, url)
+            return rpl_txt
+
+        txt =  ''.join(response.css("div.article-content > :not(div)").getall())
+        item["content"] = re.sub("src=\"(?P<url>.*?\.jpg)\"", rpl, txt)
         item["crawl_time"] = datetime.now()
         return item

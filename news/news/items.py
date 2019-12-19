@@ -9,8 +9,9 @@ import scrapy
 
 
 class NewsItem(scrapy.Item):
-    mongodb_spiders = ["decanterchina"]
+    mongodb_spiders = ["decanterchina", "liv_ex"]
     mongodb_collections = ["news"]
+
     url = scrapy.Field()
     title = scrapy.Field()
     author = scrapy.Field()
