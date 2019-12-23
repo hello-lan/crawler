@@ -21,12 +21,13 @@ class WineItem(scrapy.Item):
     id = scrapy.Field()
     cname = scrapy.Field()
     ename = scrapy.Field()
+    grapes = scrapy.Field()    # 葡萄
     cover = scrapy.Field()
 
     logo = scrapy.Field()
     summary = scrapy.Field()
+    grapeslist = scrapy.Field()
     wine_taste = scrapy.Field()
-    grapes = scrapy.Field()    # 葡萄
     vintages = scrapy.Field()   # 年份
 
 

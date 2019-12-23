@@ -17,7 +17,7 @@ class WineSpider(scrapy.Spider):
         "ITEM_PIPELINES": {
             "wineworld.pipelines.MongoDBPipeline": 301,
         },
-        "DOWNLOAD_DELAY": 0.8,
+        "DOWNLOAD_DELAY": 0.2,
     }
 
     def start_requests(self):
@@ -59,6 +59,7 @@ class WineSpider(scrapy.Spider):
         item["area_full"] = response.css("ul.wine-attr > li:contains(产区) > .attr-r::text").get(default="").strip().replace("\xa0", '').replace(" ", "")
         item["summary"] = response.css(".summary::text").get()
         item["wine_taste"] = response.css("#WineTaste::text").get()
+        item["grapeslist"] = response.css("#grapesList::text").get()
         vintage_list = []
         vintageid_set = set()
         for tmp_sel in response.css(".vtcell"):

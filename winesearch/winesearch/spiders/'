@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+import scrapy
+import json
+from scrapy.http import Request
+
+
+class PriceSpider(scrapy.Spider):
+    name = 'price'
+    allowed_domains = ['wine-search.com']
+    start_urls = ['https://www.wine-searcher.com/find/montrose+st+estephe+medoc+bordeaux+france/1997/china?Xbottle_size=all&Xprice_set=CUR&Xshow_favourite=N#t3']
+    login_url = "https://www.wine-searcher.com/sign-in?pro_redirect_url_F=/"
+
+    def start_requests(self):
+        yield Request(self.login_url, callback=self.login)
+
+    def login(self, response):
+        data = {"LoginModel[username]":'245102331@qq.com',
+                "LoginModel[password]": 'seer123456'}
+        yield scrapy.FormRequest.from_response(response, 
+                                               formdata=data,
+                                               callback=self.after_login
+                                              )
+
+    def after_login(self, response):
+        for url in self.start_urls:
+            yield Request(url)
+
+    def parse(self, response):
+        s = response.css("#hst_price_div_detail_page::attr(data-chart-data)").get()
+        data = json.loads(s)
+        print(response.text)
