@@ -10,7 +10,7 @@ import scrapy
 
 class WinesearchItem(scrapy.Item):
     mongodb_spiders = ["price", "price2"]
-    mongodb_collections = ["winesearch_price"]
+    mongodb_collections = ["winesearcher_price"]
     # name = scrapy.Field()
     url = scrapy.Field()
     wine = scrapy.Field()

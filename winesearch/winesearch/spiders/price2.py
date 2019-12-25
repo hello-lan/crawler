@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import json
 from scrapy.http import Request
 
-from winesearch.items import WinesearchItem
-
+import csv
+import json
 from http.cookies import SimpleCookie
+
+from winesearch.items import WinesearchItem
 
 
 def process_cookie_str(s):
@@ -36,25 +37,28 @@ class Price2Spider(scrapy.Spider):
     name = 'price2'
     allowed_domains = ['wine-searcher.com']
     start_urls = ['https://www.wine-searcher.com/find/montrose+st+estephe+medoc+bordeaux+france/1997/china?Xbottle_size=all&Xprice_set=CUR&Xshow_favourite=N#t3']
-    # start_urls = ['https://www.wine-searcher.com/find/dom+leroy+musigny+grand+cru+le+chambolle+cote+de+nuit+burgundy+france/-/any']
-    login_url = "https://www.wine-searcher.com/sign-in?pro_redirect_url_F=/"
 
     custom_settings = {
-        "DOWNLOAD_DELAY": 20,
+        "DOWNLOAD_DELAY": 50,
         "DEFAULT_REQUEST_HEADERS":headers,
         "ITEM_PIPELINES": {
             "winesearch.pipelines.MongoDBPipeline": 301,
         },
     }
 
+    def __init__(self, fpath=None, *args, **kwargs):
+        super(Price2Spider, self).__init__(*args, **kwargs)
+        self.fpath = fpath
+
     def start_requests(self):
-        for url in self.start_urls:
-            yield Request(url)
+        with open(self.fpath) as f:
+            csv_reader = csv.reader(f, delimiter=",")
+            for row in csv_reader:
+                url = row[0]
+                yield Request(url)
 
     def parse(self, response):
         s = response.css("#hst_price_div_detail_page::attr(data-chart-data)").get()
-        with open("test.html", 'w') as f:
-            f.write(response.text)
         try:
             data = json.loads(s)
         except:
@@ -74,5 +78,4 @@ class Price2Spider(scrapy.Spider):
         for _vintage_url in response.css("ul.vtglist > li > a::attr(href)").getall():
             vintage_url = "https://www.wine-searcher.com" + _vintage_url
             yield Request(vintage_url)
-
 

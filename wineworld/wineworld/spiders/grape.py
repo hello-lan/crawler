@@ -31,6 +31,6 @@ class GrapeSpider(scrapy.Spider):
         values = response.css("div.grape-attr > dl > dd::text").getall()
         item["attr"] = dict(zip(keys, values))
         item["img"] = response.css("article > p:nth_child(1) > img::attr(src)").get()
-        item["intro"] = "".join(response.css("article > p:nth_child(2) *::text").getall()).strip()
+        item["intro"] = response.css("div.grape-attr, article.aritcle-info").getall()
         yield item
 

@@ -42,25 +42,21 @@ class WinerySpider(scrapy.Spider):
     def parse_winery_item(self, response):
         item = WineryItem()
         item["url"] = response.url
-        item["intro"] = "".join(response.css("#content > .showMoreNChildren p::text").re("\S.*\S"))
+        item["intro"] = response.css("#content > .showMoreNChildren").get()
         item["winery_en"] = response.css(".winery-tit::text").get()
         item["winery_cn"] = response.css("span.win-en::text").get()
         item["winery_img"] = response.css(".wineryimg > img::attr(src)").get()
-        keys = response.css(".grape-attr:nth-child(2) > dl > dt::text").getall()
-        values = response.css(".grape-attr:nth-child(2) > dl > dd::text").getall()
-        item["base_info"] = dict(zip(keys, values))
-        keys2 = response.css(".grape-attr:nth-child(4) > dl > dt::text").getall()
-        values2 = response.css(".grape-attr:nth-child(4) > dl > dd::text").getall()
-        item["extra_info"] = dict(zip(keys2, values2))
+        item["base_info"] = response.css(".grape-attr:nth-child(2)").get()
+        item["extra_info"] = response.css(".grape-attr:nth-child(4)").get()
         item["winery_id"] = winery_id = response.url.split("/")[-1]
         yield item
 
-        yield scrapy.FormRequest(
-                self.winery_wines_url,
-                formdata={"id": winery_id, "page": "1"},
-                callback=self.parse_wine_item,
-                meta={"page":1, "winery_id":winery_id}
-                )
+      #  yield scrapy.FormRequest(
+      #          self.winery_wines_url,
+      #          formdata={"id": winery_id, "page": "1"},
+      #          callback=self.parse_wine_item,
+      #          meta={"page":1, "winery_id":winery_id}
+      #          )
 
     def parse_wine_item(self, response):
         winery_id = response.meta["winery_id"]

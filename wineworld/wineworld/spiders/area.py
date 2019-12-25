@@ -22,7 +22,7 @@ class AreaSpider(scrapy.Spider):
         item["url"] = response.url
         item["country_en"] = response.css(".reg-tit::text").get()
         item["country_cn"] = response.css(".tit-en::text").get()
-        item["intro"] = "".join(response.css("article p *::text").re("\S.*\S"))
+        item["intro"] = response.css("article.aritcle-info").get()
         item["regions"] = response.css("ul.reglist > li > a::text").re("\S.*\S")
         yield item
 
@@ -41,7 +41,7 @@ class AreaSpider(scrapy.Spider):
             value = tmp_sel.css("dd::text").get("").strip()
             info[key] = value
         item["region_info"] = info
-        item["intro"] = "".join([s for s in response.css("article p::text").re("\S.*\S") if len(s.strip()) > 0])
+        item["intro"] = response.css("article.aritcle-info").get()
         yield item
 
         for url in response.css("ul.reglist > li > a::attr(href)").getall():
