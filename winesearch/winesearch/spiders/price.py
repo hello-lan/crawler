@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import json
+import csv
 from scrapy.http import Request
 from winesearch import settings
 from winesearch.items import WinesearchItem
@@ -14,14 +15,18 @@ class PriceSpider(scrapy.Spider):
     login_url = "https://www.wine-searcher.com/sign-in?pro_redirect_url_F=/"
 
     custom_settings = {
-        "DOWNLOAD_DELAY": 3,
-        "DOWNLOADER_MIDDLEWARES": {
-            "winesearch.middlewares.UserAgentMiddleware": 300,
-        },
+        "DOWNLOAD_DELAY": 50,
+#        "DOWNLOADER_MIDDLEWARES": {
+#            "winesearch.middlewares.UserAgentMiddleware": 300,
+#        },
         "ITEM_PIPELINES": {
             "winesearch.pipelines.MongoDBPipeline": 301,
         },
     }
+
+    def __init__(self, fpath=None, *args, **kwargs):
+        super(PriceSpider, self).__init__(*args, **kwargs)
+        self.fpath = fpath
 
     def start_requests(self):
         print(settings.ACCOUNT)
@@ -30,7 +35,7 @@ class PriceSpider(scrapy.Spider):
     def login(self, response):
         data = {"LoginModel[username]":settings.ACCOUNT,
                 "LoginModel[password]": settings.PASSWORD,
-                "LoginModel[rememberMe]": 1,
+                "LoginModel[rememberMe]": "1",
                 }
         yield scrapy.FormRequest.from_response(response, 
                                                formdata=data,
@@ -39,8 +44,11 @@ class PriceSpider(scrapy.Spider):
                                               )
 
     def after_login(self, response):
-        for url in self.start_urls:
-            yield Request(url)
+        with open(self.fpath) as f:
+            csv_reader = csv.reader(f, delimiter=",")
+            for row in csv_reader:
+                url = row[0]
+                yield Request(url)
 
     def parse(self, response):
         s = response.css("#hst_price_div_detail_page::attr(data-chart-data)").get()
