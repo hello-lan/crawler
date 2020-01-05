@@ -33,3 +33,9 @@ scrapy crawl vintage -a fpath=data/vintage_example.csv
 scrapy crawl img -a fpath=data/img_url.csv
 ```
 
+3. whiskyauctioneer的爬虫需指定索引范围
+
+```
+scrapy crawl past_auctions -a begin=0 -a end=2
+```
+表示读取urls.csv 的第1行(0)和第2行的url(1)
