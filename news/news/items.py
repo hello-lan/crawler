@@ -9,7 +9,7 @@ import scrapy
 
 
 class NewsItem(scrapy.Item):
-    mongodb_spiders = ["decanterchina", "liv_ex"]
+    mongodb_spiders = ["decanterchina", "liv_ex", "whiskyauctioneer"]
     mongodb_collections = ["news"]
 
     url = scrapy.Field()
