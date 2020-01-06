@@ -3,6 +3,7 @@ import scrapy
 from scrapy.http import Request
 
 import os
+import re
 from whiskyauctioneer.items import Item
 
 cur_dir = os.path.dirname(__file__)
@@ -53,7 +54,7 @@ class PastAuctionsSpider(scrapy.Spider):
         item["category"] = response.meta["page_title"]
         item["end_date"] = response.meta["end_date"]
         item["url"] = response.url
-        item["lot"] = response.css("lot").re_first("\d+")
+        item["lot"] = re.findall("/lot/(\d+)/", response.url)[0]
         item["name"] = response.css(".left-heading > h1::text").get()
         item["images"] = response.css(".views-field-uc-product-image img::attr(src)").getall()
         item["price"] = response.css(".bid-info > .winning > .uc-price::text").get()
