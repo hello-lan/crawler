@@ -57,7 +57,7 @@ class PastAuctionsSpider(scrapy.Spider):
         item["name"] = response.css(".left-heading > h1::text").get()
         item["images"] = response.css(".views-field-uc-product-image img::attr(src)").getall()
         item["price"] = response.css(".bid-info > .winning > .uc-price::text").get()
-        item["base_info"] = response.css("span.field-content > whiskyproduct").get()
+        item["base_info"] = response.css("span.field-content > .whiskyproduct").get()
         item["intro"] = response.css(".rightvbn .field-content").get()
         item["recommendations"] = response.css("#block-current-auction-recommendations span.lotnumber::text").re("\d+")
         return item
