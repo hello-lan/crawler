@@ -144,17 +144,12 @@ class ProxyMiddleware:
         return response
 
     def get_random_proxy(self):
-        #if len(self.proxies) < 3:
-        if len(self.proxies) < 0:
+        if len(self.proxies) < 3:
             api = "https://proxyapi.mimvp.com/api/fetchsole.php?orderid=866611704063202105&time_avail=5&http_type=3&result_fields=1,8,2&result_format=json"
             resp = requests.get(api)
             data = resp.json()
             for item in data["result"]:
-                proxy = "http://{ip}".format(ip=item["ip:port"])
+                proxy = "http://{username}:{password}@{ip}".format(username="40838095a681", password="h7mit9hs8s",ip=item["ip:port"])
                 self.proxies.append(proxy)
-        self.proxies = [
-            "http://58.219.63.27:9999",
-            "http://114.226.246.99:9999"       
-        ]
         proxy = random.choice(self.proxies).strip()
         return proxy
