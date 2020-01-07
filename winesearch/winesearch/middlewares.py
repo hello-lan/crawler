@@ -5,6 +5,7 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 import random
+import requests
 from scrapy import signals
 
 
@@ -119,3 +120,41 @@ class UserAgentMiddleware:
     def process_request(self, request, spider):
         ua = random.choice(self.user_agent_list)
         request.headers.setdefault("User-Agent", ua)
+
+
+class ProxyMiddleware:
+    proxies = []
+    def process_request(self, request, spider):
+        print(">>>> request_method: ", request.method)
+        if request.method != "POST":
+            proxy = self.get_random_proxy()
+            request.meta["proxy"] = proxy
+            print("middlewares - ProxyMiddleware()", proxy)
+
+    def process_response(self, request, response, spider):
+        if response.status >= 400:
+            old_proxy = request.meta["proxy"]
+            if old_proxy in self.proxies:
+                self.proxies.remove(old_proxy)
+            proxy = self.get_random_proxy()
+            request.meta["proxy"] = proxy
+            request.dont_filter=True
+            print("replace proxy: %s  -> %s"%(old_proxy, proxy))
+            return request
+        return response
+
+    def get_random_proxy(self):
+        #if len(self.proxies) < 3:
+        if len(self.proxies) < 0:
+            api = "https://proxyapi.mimvp.com/api/fetchopen.php?orderid=862271501041275107&num=100&http_type=2&ping_time=1&transfer_time=5&result_fields=1,2&result_format=json"
+            resp = requests.get(api)
+            data = resp.json()
+            for item in data["result"]:
+                proxy = "http://{ip}".format(ip=item["ip:port"])
+                self.proxies.append(proxy)
+        self.proxies = [
+            "http://58.219.63.27:9999",
+            "http://114.226.246.99:9999"       
+        ]
+        proxy = random.choice(self.proxies).strip()
+        return proxy

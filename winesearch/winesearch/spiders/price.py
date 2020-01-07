@@ -15,10 +15,12 @@ class PriceSpider(scrapy.Spider):
     login_url = "https://www.wine-searcher.com/sign-in?pro_redirect_url_F=/"
 
     custom_settings = {
-        "DOWNLOAD_DELAY": 50,
-#        "DOWNLOADER_MIDDLEWARES": {
+        "DOWNLOAD_DELAY": 10,
+        "DOWNLOADER_MIDDLEWARES": {
 #            "winesearch.middlewares.UserAgentMiddleware": 300,
-#        },
+            "winesearch.middlewares.ProxyMiddleware": 100,
+            "scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": None,
+        },
         "ITEM_PIPELINES": {
             "winesearch.pipelines.MongoDBPipeline": 301,
         },
