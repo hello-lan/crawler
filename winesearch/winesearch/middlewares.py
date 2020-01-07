@@ -146,7 +146,7 @@ class ProxyMiddleware:
     def get_random_proxy(self):
         #if len(self.proxies) < 3:
         if len(self.proxies) < 0:
-            api = "https://proxyapi.mimvp.com/api/fetchopen.php?orderid=862271501041275107&num=100&http_type=2&ping_time=1&transfer_time=5&result_fields=1,2&result_format=json"
+            api = "https://proxyapi.mimvp.com/api/fetchsole.php?orderid=866611704063202105&time_avail=5&http_type=3&result_fields=1,8,2&result_format=json"
             resp = requests.get(api)
             data = resp.json()
             for item in data["result"]:
