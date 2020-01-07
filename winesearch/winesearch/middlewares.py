@@ -7,6 +7,7 @@
 import random
 import requests
 from scrapy import signals
+import base64
 
 
 class WinesearchSpiderMiddleware(object):
@@ -126,9 +127,12 @@ class ProxyMiddleware:
     proxies = []
     def process_request(self, request, spider):
         print(">>>> request_method: ", request.method)
+        proxy_user_pass = "40838095a681:h7mit9hs8s"
+        encoded_user_pass = base64.encodestrig(proxy_user_pass)
         if request.method != "POST":
             proxy = self.get_random_proxy()
             request.meta["proxy"] = proxy
+            request,headers["Proxy-Authorization"] = "Basic " + encoded_user_pass
             print("middlewares - ProxyMiddleware()", proxy)
 
     def process_response(self, request, response, spider):
@@ -149,7 +153,8 @@ class ProxyMiddleware:
             resp = requests.get(api)
             data = resp.json()
             for item in data["result"]:
-                proxy = "http://{username}:{password}@{ip}".format(username="40838095a681", password="h7mit9hs8s",ip=item["ip:port"])
+                #proxy = "http://{username}:{password}@{ip}".format(username="40838095a681", password="h7mit9hs8s",ip=item["ip:port"])
+                proxy = "http://{ip}".format(ip=item["ip:port"])
                 self.proxies.append(proxy)
         proxy = random.choice(self.proxies).strip()
         return proxy
