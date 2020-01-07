@@ -32,7 +32,7 @@ class PriceSpider(scrapy.Spider):
 
     def start_requests(self):
         print(settings.ACCOUNT)
-        yield Request(self.login_url, callback=self.login)
+        yield Request(self.login_url, callback=self.login, meta={"use_proxy":False})
 
     def login(self, response):
         data = {"LoginModel[username]":settings.ACCOUNT,
@@ -43,6 +43,7 @@ class PriceSpider(scrapy.Spider):
                                                formdata=data,
                                                callback=self.after_login,
                                                dont_filter=True,
+                                               meta={"use_proxy":False}
                                               )
 
     def after_login(self, response):
