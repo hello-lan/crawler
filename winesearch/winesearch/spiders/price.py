@@ -15,11 +15,11 @@ class PriceSpider(scrapy.Spider):
     login_url = "https://www.wine-searcher.com/sign-in?pro_redirect_url_F=/"
 
     custom_settings = {
-        "DOWNLOAD_DELAY": 10,
+        "DOWNLOAD_DELAY": 50,
         "DOWNLOADER_MIDDLEWARES": {
-#            "winesearch.middlewares.UserAgentMiddleware": 300,
-            "winesearch.middlewares.ProxyMiddleware": 100,
-            "scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": None,
+            "winesearch.middlewares.UserAgentMiddleware": 300,
+           # "winesearch.middlewares.ProxyMiddleware": 100,
+           # "scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": None,
         },
         "ITEM_PIPELINES": {
             "winesearch.pipelines.MongoDBPipeline": 301,
@@ -32,7 +32,7 @@ class PriceSpider(scrapy.Spider):
 
     def start_requests(self):
         print(settings.ACCOUNT)
-        yield Request(self.login_url, callback=self.login, meta={"use_proxy":True})
+        yield Request(self.login_url, callback=self.login)
 
     def login(self, response):
         data = {"LoginModel[username]":settings.ACCOUNT,
@@ -42,8 +42,7 @@ class PriceSpider(scrapy.Spider):
         yield scrapy.FormRequest.from_response(response, 
                                                formdata=data,
                                                callback=self.after_login,
-                                               dont_filter=True,
-                                               meta={"use_proxy":True}
+                                               dont_filter=True
                                               )
 
     def after_login(self, response):

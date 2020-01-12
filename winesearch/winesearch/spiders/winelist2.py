@@ -14,6 +14,9 @@ class Winelist2Spider(CrawlSpider):
 
     custom_settings = {
         "DOWNLOAD_DELAY": 50,
+        "DOWNLOADER_MIDDLEWARES": {
+            "winesearch.middlewares.SleepMiddleware": 100,
+        },
     }
 
     rules = (
@@ -41,5 +44,5 @@ class Winelist2Spider(CrawlSpider):
 
     def parse_item(self, response):
         for url in response.css("table.nltbl td>a::attr(href)").getall():
-            item = {"url": url}
+            item = {"url": response.urljoin(url)}
             yield item

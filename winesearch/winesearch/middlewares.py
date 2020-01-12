@@ -9,6 +9,8 @@ import requests
 from scrapy import signals
 import base64
 
+from time import sleep
+
 
 class WinesearchSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -131,6 +133,7 @@ class ProxyMiddleware:
         print("middlewares - ProxyMiddleware()", proxy)
 
     def process_response(self, request, response, spider):
+        print(response.status, type(response.status))
         if response.status >= 400:
             old_proxy = request.meta["proxy"]
             if old_proxy in self.proxies:
@@ -144,12 +147,23 @@ class ProxyMiddleware:
 
     def get_random_proxy(self):
         if len(self.proxies) < 3:
-            api = "https://proxyapi.mimvp.com/api/fetchsole.php?orderid=866611704063202105&time_avail=5&http_type=3&result_fields=1,8,2&result_format=json"
+            api = "https://proxyapi.mimvp.com/api/fetchsecret.php?orderid=866611704063202105&time_avail=5&http_type=3&result_fields=1,8,2&result_format=json"
             resp = requests.get(api)
             data = resp.json()
             for item in data["result"]:
-                proxy = "http://{username}:{password}@{ip}".format(username="40838095a681", password="h7mit9hs8s",ip=item["ip:port"])
-                #proxy = "http://{ip}".format(ip=item["ip:port"])
+                #proxy = "http://{username}:{password}@{ip}".format(username="40838095a681", password="h7mit9hs8s",ip=item["ip:port"])
+                proxy = "http://{ip}".format(ip=item["ip:port"])
                 self.proxies.append(proxy)
-        proxy = random.choice(self.proxies).strip()
+        # proxy = random.choice(self.proxies).strip()
+        proxy = self.proxies[0]
         return proxy
+        
+
+class SleepMiddleware:
+    cnt = 0
+    def process_request(self, request, spider):
+        self.cnt += 1
+        if self.cnt % 100 == 0:
+            print("SleepMiddleware()  --> sleep...")
+            sleep(3 * 60)
+
