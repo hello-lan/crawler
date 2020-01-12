@@ -26,9 +26,11 @@ class PriceSpider(scrapy.Spider):
         },
     }
 
-    def __init__(self, fpath=None, *args, **kwargs):
+    def __init__(self, fpath=None, begin=0, end=1, *args, **kwargs):
         super(PriceSpider, self).__init__(*args, **kwargs)
         self.fpath = fpath
+        self.begin = begin
+        self.end = end
 
     def start_requests(self):
         print(settings.ACCOUNT)
@@ -48,8 +50,11 @@ class PriceSpider(scrapy.Spider):
     def after_login(self, response):
         with open(self.fpath) as f:
             csv_reader = csv.reader(f, delimiter=",")
+            urls = []
             for row in csv_reader:
                 url = row[0]
+                urls.append(url)
+            for url in urls[self.begin:self.end]:
                 yield Request(url)
 
     def parse(self, response):
