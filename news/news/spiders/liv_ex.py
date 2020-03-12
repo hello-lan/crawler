@@ -21,7 +21,7 @@ class LivExSpider(scrapy.Spider):
     def parse(self, response):
         for url in response.css("[id|=post] h2.title > a::attr(href)").getall():
             yield Request(url, callback=self.parse_item)
-        next_url = response.css("div.next > a::attr(href)").get()
+        next_url = response.css("a.next::attr(href)").get()
         if next_url:
             yield Request(next_url)
 
